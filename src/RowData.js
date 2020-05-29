@@ -12,7 +12,7 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 const { useState, useEffect } = React;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
   },
@@ -23,48 +23,90 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// let userData;
-// async function fetchdata(){
-//   // Load async data from an inexistent endpoint.
-//   userData = await axios.get("https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=halodoc&origin=*");
-//   console.log(userData)
-// }
-
-function RowData({rowdata}) {
+function RowData({ rowdata, searchKey }) {
   const classes = useStyles();
-//  console.log('name',name);
- console.log('rowdata',rowdata)
+  let names,
+    links,
+    searchresults = null;
+  //const [filtered, setfiltered] = useState(null);
+  const [initialDom, setInitialDom] = useState(null);
+  const [filteredDom, setfilteredDom] = useState(null);
 
-  const jsondata =[];
-  let index = 0;
-  let names, links;
-
-  for (let i = 0; i <rowdata.data.length;i++){
-    if(i=== 1){
-      names =rowdata.data[i]
+  for (let i = 0; i < rowdata.length; i++) {
+    if (i === 1) {
+      names = rowdata[i];
     }
-    if(i === 3){
-      links = rowdata.data[i];
+    if (i === 3) {
+      links = rowdata[i];
     }
-  
   }
+  //intial condition
+  //setfiltered(names);
+  let filtered = names;
 
+  useEffect(() => {
+    console.log('searchKey', searchKey);
+    // const searchedItem = names.filter(function (name) {
+    //   return (name = searchKey);
+    // });
+    filtered = names.filter(function (str) {
+      // return str.indexOf(searchKey) === -1;
+      return str.match(searchKey);
+    });
+
+    searchresults = filtered.map((name, key) => (
+      <Grid container spacing={24}>
+        <Paper
+          className={classes.paper}
+          style={{ width: '60%', paddingTop: 15 }}
+        >
+          <Typography>
+            {name}{' '}
+            <span style={{ cursor: 'pointer' }}>
+              <a href={links[key]}>View</a>
+            </span>
+          </Typography>
+        </Paper>
+      </Grid>
+    ));
+    setfilteredDom(searchresults);
+    // setfiltered(filter);
+    console.log('filtered', filtered);
+  }, [searchKey]);
+
+  let initialresults = names.map((name, key) => (
+    <Grid container spacing={24}>
+      <Paper className={classes.paper} style={{ width: '60%', paddingTop: 15 }}>
+        <Typography>
+          {name}{' '}
+          <span style={{ cursor: 'pointer' }}>
+            <a href={links[key]}>View</a>
+          </span>
+        </Typography>
+      </Paper>
+    </Grid>
+  ));
+  //setInitialDom(initialresults);
+
+  console.log('initialDom', initialDom);
+  console.log('filteredDom', filteredDom);
 
   return (
     <div className={classes.root}>
       <div>
-          <Box m={3}>
+        <Box m={3}>
           <Container maxWidth="md">
-            <Grid container spacing={3} style={{width:'1200px'}}>
-              {names.map((item, key) =>
-            <Paper className={classes.paper}>
-                <Typography> {item} <span style={{cursor: 'pointer'}}>{links[key]}</span></Typography>
-            </Paper>
-              
+            <Grid container spacing={3} style={{ width: '1200px' }}>
+              {console.log(
+                'searchKey in render',
+                searchKey,
+                'filtered in render',
+                filtered,
               )}
-           </Grid>
-           </Container>
-           </Box>
+              {searchKey ? <>{filteredDom} </> : <>{initialresults}</>}
+            </Grid>
+          </Container>
+        </Box>
       </div>
     </div>
   );

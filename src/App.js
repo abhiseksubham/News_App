@@ -12,7 +12,7 @@ import axios from 'axios';
 // import useEffect from 'react'
 const { useState, useEffect } = React;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
   },
@@ -23,61 +23,69 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
 function App() {
   const classes = useStyles();
-    let userData = [];
-    const [data, setData] = useState(null)
-    const [searchKey, setSearchKey] = useState(null)
+  let userData = [];
+  const [data, setData] = useState(null);
+  const [searchKey, setSearchKey] = useState(null);
+  const [key, setKey] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       const result = await axios(
         'https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=halodoc&origin=*',
       );
-      console.log('result.data', result.data)
+      console.log('result.data', result.data);
       setData(result.data);
-         console.log('data', data)
+      console.log('data', data);
     };
- 
+
     fetchData();
   }, []);
 
-  const handleSubmit = e => {
-       //searchKey(e.target.value);
-    };
+  const onSearch = e => {
+    const { value } = e.target;
+    setSearchKey(value);
+    console.log(value);
+  };
 
+  const handleSubmit = () => {
+    //searchKey(e.target.value);
+    console.log('handle submit here');
+    setKey(searchKey);
+  };
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <Paper className={classes.paper}>
-             <TextField id="standard-basic" label="Enter Item to search" />
-          </Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Paper className={classes.paper}>xs=3</Paper>
-        </Grid>
-        <Grid item xs={4}>
-          <Paper className={classes.paper}>     
-           <Button variant="contained" color="secondary" onClick={handleSubmit()}>
+      <Paper className={classes.paper}>
+        <Grid container spacing={3} style={{ marginBottom: 10 }}>
+          <Grid item xs={4}>
+            <TextField
+              id="standard-basic"
+              label="Enter Item to search"
+              onChange={onSearch}
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Paper className={classes.paper}>xs=3</Paper>
+          </Grid>
+          <Grid item xs={4} style={{ paddingTop: 10 }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleSubmit}
+            >
               Submit
-          </Button>
-          </Paper>
+            </Button>
+          </Grid>
+
+          {data ? (
+            <Grid container spacing={3}>
+              <RowData rowdata={data} searchKey={key} />
+            </Grid>
+          ) : null}
         </Grid>
-        
-        {data ?
-        <>
-        <p>data : {data}</p>
-        <Grid container spacing={3}>
-          <RowData data = {data}/>
-            )}
-        </Grid>
-               </>
-        : null}
-      </Grid>
+      </Paper>
     </div>
   );
 }
