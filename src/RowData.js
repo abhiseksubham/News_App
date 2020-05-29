@@ -1,7 +1,4 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -28,8 +25,6 @@ function RowData({ rowdata, searchKey }) {
   let names,
     links,
     searchresults = null;
-  //const [filtered, setfiltered] = useState(null);
-  const [initialDom, setInitialDom] = useState(null);
   const [filteredDom, setfilteredDom] = useState(null);
 
   for (let i = 0; i < rowdata.length; i++) {
@@ -40,17 +35,10 @@ function RowData({ rowdata, searchKey }) {
       links = rowdata[i];
     }
   }
-  //intial condition
-  //setfiltered(names);
   let filtered = names;
 
   useEffect(() => {
-    console.log('searchKey', searchKey);
-    // const searchedItem = names.filter(function (name) {
-    //   return (name = searchKey);
-    // });
     filtered = names.filter(function (str) {
-      // return str.indexOf(searchKey) === -1;
       return str.match(searchKey);
     });
 
@@ -70,8 +58,6 @@ function RowData({ rowdata, searchKey }) {
       </Grid>
     ));
     setfilteredDom(searchresults);
-    // setfiltered(filter);
-    console.log('filtered', filtered);
   }, [searchKey]);
 
   let initialresults = names.map((name, key) => (
@@ -86,10 +72,6 @@ function RowData({ rowdata, searchKey }) {
       </Paper>
     </Grid>
   ));
-  //setInitialDom(initialresults);
-
-  console.log('initialDom', initialDom);
-  console.log('filteredDom', filteredDom);
 
   return (
     <div className={classes.root}>
@@ -97,12 +79,6 @@ function RowData({ rowdata, searchKey }) {
         <Box m={3}>
           <Container maxWidth="md">
             <Grid container spacing={3} style={{ width: '1200px' }}>
-              {console.log(
-                'searchKey in render',
-                searchKey,
-                'filtered in render',
-                filtered,
-              )}
               {searchKey ? <>{filteredDom} </> : <>{initialresults}</>}
             </Grid>
           </Container>
