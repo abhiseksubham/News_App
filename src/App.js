@@ -30,6 +30,7 @@ function App() {
   const [key, setKey] = useState(null);
   const [source, setSource] = useState('Halo-Wiki');
   const [hackerdata, sethackerdata] = useState(null);
+  const [filteredAuthors, setfilteredAuthors] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,6 +52,10 @@ function App() {
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    sethackerdata(hackerdata?.filter(p => p.author === searchKey));
+  }, [searchKey]);
 
   //FetchCounts , mutate json, setData
   const getCounts = res => {

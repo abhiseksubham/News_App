@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box';
 import Container from '@material-ui/core/Container';
 import Table from './Table';
 
-const { useState } = React;
+const { useState, useEffect } = React;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -19,7 +19,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function RowData({ rowdata, searchKey }) {
+function RowData({ rowdata, searchKey = ' ' }) {
   const classes = useStyles();
   const [filteredDom, setfilteredDom] = useState(null);
 
@@ -30,6 +30,19 @@ function RowData({ rowdata, searchKey }) {
       </Paper>
     </Grid>
   );
+
+  useEffect(() => {
+    setfilteredDom(
+      <Grid container spacing={24}>
+        <Paper
+          className={classes.paper}
+          style={{ width: '60%', paddingTop: 15 }}
+        >
+          <Table rowData={rowdata} />
+        </Paper>
+      </Grid>,
+    );
+  }, [rowdata]);
 
   return (
     <div className={classes.root}>
